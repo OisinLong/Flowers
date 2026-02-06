@@ -1,0 +1,117 @@
+/* Global */
+body {
+    margin: 0;
+    font-family: "Courier New",Courier,monospace;
+}
+
+/* ---------- Login Page ---------- */
+
+.login-page {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box {
+    width: 300px;
+    padding: 20px;
+    border: 1px solid #ccc;
+}
+
+.login-box form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ---------- Navigation ---------- */
+
+header {
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+    padding: 0;
+    margin: 0;
+}
+
+nav a {
+    text-decoration: none;
+    color: black;
+}
+
+/* ---------- Home / Marketplace ---------- */
+
+main {
+    padding: 20px;
+}
+
+.items,.orders {
+    align-items: start;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.item,.order {
+    height: 300px;
+    box-sizing: border-box; /* include padding in height calculations */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* vertical centering */
+    align-items: center;     /* horizontal centering */
+    padding: 40px;
+    text-align: center;
+    border: 10px solid #ccc;
+}
+
+.items > .item:only-child,
+.orders > .order:only-child {
+    grid-column: 2;       /* place the single card in the middle column */
+    justify-self: center; /* fill the column so width matches the normal card width */
+    width: 100%;          /* ensure the item occupies full column width */
+    box-sizing: border-box;
+}
+
+/* center an independent element to match the .items middle column */
+.centered {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.centered > .description {
+    grid-column: 2; /* place into middle column */
+    justify-self: center; /* center the block in that column */
+    width: 100%; /* occupy full column width (like .item:only-child) */
+    max-width: 600px; /* same visual width as .item */
+    box-sizing: border-box; /* include padding + border in width */
+    padding: 40px;
+    border: 10px solid #ccc;
+    margin: 0; /* avoid margin collapse that can hide borders */
+    display: block;
+    text-align: center;
+}
+
+.centered > .addToBasket {
+    grid-column: 2; /* place into middle column */
+    justify-self: center; /* center the block in that column */
+    width: 100%; /* occupy full column width (like .item:only-child) */
+    max-width: 600px; /* same visual width as .item */
+    box-sizing: border-box; /* include padding + border in width */
+    margin: 0; /* avoid margin collapse that can hide borders */
+    display: block;
+    text-align: center;
+}

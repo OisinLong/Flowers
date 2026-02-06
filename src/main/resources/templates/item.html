@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Item</title>
+    <link rel="stylesheet" th:href="@{/style.css}" href="/style.css">
+</head>
+<body>
+
+<!-- Top Navigation -->
+<header>
+    <nav>
+        <h1><a th:href="@{/home}" href="/home">Marketplace</a></h1>
+
+        <ul>
+            <li><a th:href="@{/profile}" href="/profile">Profile</a></li>
+            <li><a th:href="@{/ordersUser}" href="/ordersUser">Orders</a></li>
+            <li><a th:href="@{/basket}" href="/basket">Basket</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- Main Content -->
+<main>
+    <div class="items">
+        <div class="item">Item</div>
+    </div>
+    <div class="centered">
+        <div class="description">
+            This is a description of the item. It provides details about the item, its features, and any other relevant information that potential buyers might find useful. The description can include specifications, usage instructions, and any other pertinent details that help customers make informed purchasing decisions.
+        </div>
+    </div>
+    <!-- simple add to basket button that redirects to basket view -->
+    <div class="centered">
+        <div class="addToBasket">
+        <a th:href="@{/basket}" href="/basket">Add to Basket</a>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>
