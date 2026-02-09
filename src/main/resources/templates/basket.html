@@ -20,16 +20,31 @@
     </nav>
 </header>
 
-<!-- Main Content -->
 <main>
-    <section class="items">
-        <div class="item">
-            Item
-            <!-- simple link to payment page -->
-            <div><a th:href="@{/payment}" href="/payment">Payment</a></div>
+    <h2>Your Basket</h2>
+
+    <div class="centered">
+        <div class="basket-items">
+            <!-- Basket products -->
+            <div class="item" th:each="product : ${items}">
+                <h3 th:text="${product.name}">Product Name</h3>
+                <p th:text="'Price: $' + ${product.price}">Price</p>
+            </div>
+
+            <!-- Total -->
+            <div class="total">
+                <h3>Total: $<span th:text="${total}">0.00</span></h3>
+            </div>
+
+            <!-- Checkout -->
+            <div class="checkout">
+                <a th:href="@{/payment}">Proceed to Payment</a>
+            </div>
         </div>
-    </section>
+    </div>
 </main>
+
+
 
 </body>
 </html>

@@ -7,33 +7,38 @@
 </head>
 <body>
 
-<!-- Top Navigation -->
 <header>
     <nav>
-        <h1><a th:href="@{/home}" href="/home">Marketplace</a></h1>
-
+        <h1><a th:href="@{/home}">Marketplace</a></h1>
         <ul>
-            <li><a th:href="@{/profile}" href="/profile">Profile</a></li>
-            <li><a th:href="@{/ordersUser}" href="/ordersUser">Orders</a></li>
-            <li><a th:href="@{/basket}" href="/basket">Basket</a></li>
+            <li><a th:href="@{/profile}">Profile</a></li>
+            <li><a th:href="@{/ordersUser}">Orders</a></li>
+            <li><a th:href="@{/basket}">Basket</a></li>
         </ul>
     </nav>
 </header>
 
-<!-- Main Content -->
 <main>
     <div class="items">
-        <div class="item">Item</div>
-    </div>
-    <div class="centered">
-        <div class="description">
-            This is a description of the item. It provides details about the item, its features, and any other relevant information that potential buyers might find useful. The description can include specifications, usage instructions, and any other pertinent details that help customers make informed purchasing decisions.
+        <!-- You could keep a box for the selected item if you like -->
+        <div class="item">
+            <h2 th:text="${product.name}">Product Name</h2>
+            <p th:text="'Price: $' + ${product.price}">Price</p>
         </div>
     </div>
-    <!-- simple add to basket button that redirects to basket view -->
+
+    <div class="centered">
+        <!-- Your styled description div -->
+        <div class="description" th:text="${product.description}">
+            Product description here
+        </div>
+    </div>
+
     <div class="centered">
         <div class="addToBasket">
-        <a th:href="@{/basket}" href="/basket">Add to Basket</a>
+            <form th:action="@{/basket/add/{id}(id=${product.id})}" method="post">
+                <button type="submit" class="addToBasket">Add to Basket</button>
+            </form>
         </div>
     </div>
 </main>

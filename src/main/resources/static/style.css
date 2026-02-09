@@ -115,3 +115,40 @@ main {
     display: block;
     text-align: center;
 }
+/* Basket container in middle column */
+.basket-items {
+    display: flex;
+    flex-direction: column;  /* stack items vertically */
+    gap: 15px;               /* space between items */
+    grid-column: 2;          /* middle column of parent grid */
+    justify-self: center;    /* center column horizontally */
+    width: 100%;
+    max-width: 600px;        /* match homepage box width */
+    box-sizing: border-box;
+}
+
+/* Each basket item styled like homepage boxes */
+.basket-items .item {
+    padding: 40px;
+    border: 10px solid #ccc;
+    text-align: center;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: auto; /* allow height to fit content */
+}
+
+/* Total and checkout buttons styled as a box like items */
+.basket-items .total,
+.basket-items .checkout {
+    padding: 40px;
+    border: 10px solid #ccc;
+    text-align: center;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}

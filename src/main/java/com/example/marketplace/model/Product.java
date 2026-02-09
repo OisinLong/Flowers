@@ -9,6 +9,7 @@ public class Product {
     private Long id;
 
     private String name;
+    @Lob
     private String description;
     private double price;
 
