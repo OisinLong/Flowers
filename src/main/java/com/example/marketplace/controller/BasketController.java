@@ -1,8 +1,8 @@
 package com.example.marketplace.controller;
 
 import com.example.marketplace.model.Product;
-import com.example.marketplace.service.BasketService;
 import com.example.marketplace.repository.ProductRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,44 +10,53 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 public class BasketController {
 
-    // Inject the basket service here
-    @Autowired
-    private BasketService basketService;
-
-    // Inject the product repository to fetch products by id
     @Autowired
     private ProductRepository productRepository;
 
     @GetMapping("/basket")
-    public String basket(Model model) {
-        // Get all items in the basket
-        model.addAttribute("items", basketService.getItems());
+    public String showBasket(HttpSession session, Model model) {
+        // Retrieve the basket from the session (stored in H2)
+        List<Product> basket = (List<Product>) session.getAttribute("basket");
 
-        // Calculate the total price
-        model.addAttribute("total", basketService.getTotalPrice());
+        if (basket == null) {
+            basket = new ArrayList<>();
+        }
 
-        // Return the basket view
+        // Calculate total price
+        double total = basket.stream().mapToDouble(Product::getPrice).sum();
+
+        model.addAttribute("items", basket);
+        model.addAttribute("total", total);
+
         return "basket";
     }
 
+    @PostMapping("/basket/add/{id}")
+    public String addToBasket(@PathVariable Long id, HttpSession session) {
+        // Find the product
+        Product product = productRepository.findById(id).orElseThrow();
+
+        // Get existing basket or create a new one
+        List<Product> basket = (List<Product>) session.getAttribute("basket");
+        if (basket == null) {
+            basket = new ArrayList<>();
+        }
+
+        // Add item and save back to session (triggers update in H2 SPRING_SESSION_ATTRIBUTES)
+        basket.add(product);
+        session.setAttribute("basket", basket);
+
+        return "redirect:/home";
+    }
 
     @GetMapping("/payment")
     public String payment() {
-        return "payment"; // your payment.html page
-    }
-
-    @PostMapping("/basket/add/{id}")
-    public String addToBasket(@PathVariable Long id) {
-        // Get the product from the database
-        Product product = productRepository.findById(id).orElseThrow();
-
-        // Add it to the basket
-        basketService.add(product);
-
-        // Redirect back to the homepage
-        return "redirect:/home";
+        return "payment";
     }
 }

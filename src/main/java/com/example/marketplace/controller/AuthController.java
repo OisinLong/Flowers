@@ -20,7 +20,7 @@ public class AuthController {
         return "login";
     }
 
-    // Handle login POST: ignore credentials and always redirect to the home page
+    // Handle login POST: redirects based on user role and sets session attributes
     @PostMapping("/login")
     public String doLogin(@RequestParam String username, @RequestParam String password, HttpServletRequest request) {
         // Checking the user against the database and authenticating them
@@ -32,7 +32,7 @@ public class AuthController {
 
             // Checking if the user is an admin or normal user
             if ("admin".equalsIgnoreCase(user.getRole())) {
-                return "redirect:/adminHome";
+                return "redirect:/sudoHome";
             } else {
                 return "redirect:/home";
             }
