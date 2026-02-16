@@ -1,39 +1,43 @@
 package com.example.marketplace.service;
 
 import com.example.marketplace.model.Product;
+import com.example.marketplace.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.annotation.SessionScope; // Add this import
-import java.io.Serializable; // Recommended for session storage
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.context.annotation.SessionScope;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
-@SessionScope // This creates a NEW service instance for every unique session/user
-public class BasketService implements Serializable { // Serializable helps H2 save the object
+@SessionScope
+public class BasketService implements Serializable {
+    // Map of Product -> Quantity
+    private final Map<Long, Integer> items = new HashMap<>();
 
-    private final List<Product> items = new ArrayList<>();
+    @Autowired
+    private transient ProductRepository productRepo; // transient so it's not serialized into H2
 
-    public void add(Product product) {
-        items.add(product);
+    public void add(Long productId) {
+        items.put(productId, items.getOrDefault(productId, 0) + 1);
     }
 
-    public List<Product> getItems() {
-        return new ArrayList<>(items);
+    public void remove(Long productId) {
+        items.remove(productId);
     }
 
-    public void remove(Product product) {
-        items.remove(product);
-    }
-
-    public void clear() {
-        items.clear();
+    public Map<Product, Integer> getBasketContent() {
+        Map<Product, Integer> content = new HashMap<>();
+        items.forEach((id, qty) -> {
+            content.put(productRepo.findById(id).orElseThrow(), qty);
+        });
+        return content;
     }
 
     public double getTotalPrice() {
-        return items.stream().mapToDouble(Product::getPrice).sum();
-    }
-
-    public int getItemCount() {
-        return items.size();
+        return getBasketContent().entrySet().stream()
+                .mapToDouble(e -> e.getKey().getPrice() * e.getValue())
+                .sum();
     }
 }
