@@ -8,30 +8,51 @@ import org.springframework.web.context.annotation.SessionScope;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Service
 @SessionScope
 public class BasketService implements Serializable {
-    // Map of Product -> Quantity
-    private final Map<Long, Integer> items = new HashMap<>();
+    private static final long serialVersionUID = 1L;
+
+    // The raw data: Product ID -> Quantity
+    private final Map<Long, Integer> items = new LinkedHashMap<>();
 
     @Autowired
-    private transient ProductRepository productRepo; // transient so it's not serialized into H2
+    private transient ProductRepository productRepository;
 
-    public void add(Long productId) {
-        items.put(productId, items.getOrDefault(productId, 0) + 1);
+    public void addItem(Long id) {
+        items.put(id, items.getOrDefault(id, 0) + 1);
     }
 
-    public void remove(Long productId) {
-        items.remove(productId);
+    public void removeItem(Long id) {
+        items.remove(id);
     }
 
+    // Adds one more to the quantity
+    public void incrementItem(Long id) {
+        items.put(id, items.getOrDefault(id, 0) + 1);
+    }
+
+    // Subtracts one, or removes the item entirely if quantity hits zero
+    public void decrementItem(Long id) {
+        if (items.containsKey(id)) {
+            int currentQty = items.get(id);
+            if (currentQty > 1) {
+                items.put(id, currentQty - 1);
+            } else {
+                items.remove(id);
+            }
+        }
+    }
+
+    // Business Logic: Transforms IDs into Objects for the View
     public Map<Product, Integer> getBasketContent() {
         Map<Product, Integer> content = new HashMap<>();
-        items.forEach((id, qty) -> {
-            content.put(productRepo.findById(id).orElseThrow(), qty);
-        });
+        items.forEach((id, qty) ->
+                productRepository.findById(id).ifPresent(p -> content.put(p, qty))
+        );
         return content;
     }
 
