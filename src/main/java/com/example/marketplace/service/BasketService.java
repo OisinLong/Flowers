@@ -30,6 +30,8 @@ public class BasketService implements Serializable {
         items.remove(id);
     }
 
+    public void clear() {items.clear(); }
+
     // Adds one more to the quantity
     public void incrementItem(Long id) {
         items.put(id, items.getOrDefault(id, 0) + 1);
@@ -49,7 +51,7 @@ public class BasketService implements Serializable {
 
     // Business Logic: Transforms IDs into Objects for the View
     public Map<Product, Integer> getBasketContent() {
-        Map<Product, Integer> content = new HashMap<>();
+        Map<Product, Integer> content = new LinkedHashMap<>();
         items.forEach((id, qty) ->
                 productRepository.findById(id).ifPresent(p -> content.put(p, qty))
         );

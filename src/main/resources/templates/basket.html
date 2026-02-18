@@ -39,20 +39,23 @@
 
                 <div class="item-controls">
                     <div class="controls-group">
-                        <form th:action="@{/basket/decrement/{id}(id=${entry.key.id})}" method="post" class="qty-form">
-                            <button type="submit" class="btn-qty">-</button>
-                        </form>
-
                         <span class="qty-display">Qty: <strong th:text="${entry.value}">1</strong></span>
 
                         <form th:action="@{/basket/increment/{id}(id=${entry.key.id})}" method="post" class="qty-form">
                             <button type="submit" class="btn-qty">+</button>
                         </form>
+
+                        <form th:action="@{/basket/decrement/{id}(id=${entry.key.id})}" method="post" class="qty-form">
+                            <button type="submit" class="btn-qty">-</button>
+                        </form>
+
+                        <form th:action="@{/basket/remove/{id}(id=${entry.key.id})}" method="post" class="remove-form">
+                            <button type="submit" class="btn-remove">Remove All</button>
+                        </form>
+
                     </div>
 
-                    <form th:action="@{/basket/remove/{id}(id=${entry.key.id})}" method="post" class="remove-form">
-                        <button type="submit" class="btn-remove">Remove All</button>
-                    </form>
+
                 </div>
             </div>
 
