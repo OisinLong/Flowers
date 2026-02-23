@@ -64,6 +64,16 @@ main {
     gap: 15px;
 }
 
+/* Normalize product images so files with bigger pixel dimensions don't render larger */
+.item img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* show full image without cropping */
+}
+
 .item,.order {
     height: 300px;
     box-sizing: border-box; /* include padding in height calculations */
@@ -73,7 +83,12 @@ main {
     align-items: center;     /* horizontal centering */
     padding: 40px;
     text-align: center;
-    border: 10px solid #ccc;
+    border: 10px solid rgb(65, 65, 65);
+}
+
+.item {
+    background-color: rgb(65, 65, 65);
+    color: white;
 }
 
 .items > .item:only-child,
@@ -82,6 +97,7 @@ main {
     justify-self: center; /* fill the column so width matches the normal card width */
     width: 100%;          /* ensure the item occupies full column width */
     box-sizing: border-box;
+    color: rgb(65, 65, 65)
 }
 
 /* center an independent element to match the .items middle column */
