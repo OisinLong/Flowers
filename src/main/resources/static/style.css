@@ -1,7 +1,24 @@
+/* ========== Colour Palette ==========
+   #414141  — Charcoal
+   #4A7C59  — Forest green
+   #A3C4A8  — Sage
+   #EAF4E8  — Pale green
+   ===================================== */
+
 /* Global */
 body {
     margin: 0;
-    font-family: "Courier New",Courier,monospace;
+    font-family: "Courier New", Courier, monospace;
+    background-color: #EAF4E8;
+    color: #414141;
+}
+
+a {
+    color: #4A7C59;
+}
+
+a:hover {
+    color: #414141;
 }
 
 /* ---------- Login Page ---------- */
@@ -11,12 +28,19 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #EAF4E8;
 }
 
 .login-box {
     width: 300px;
     padding: 20px;
-    border: 1px solid #ccc;
+    border: 2px solid #A3C4A8;
+    background-color: white;
+    border-radius: 8px;
+}
+
+.login-box h1 {
+    color: #4A7C59;
 }
 
 .login-box form {
@@ -25,17 +49,61 @@ body {
     gap: 10px;
 }
 
+.login-box input,
+.login-box select {
+    padding: 8px;
+    border: 1px solid #A3C4A8;
+    border-radius: 4px;
+    font-family: inherit;
+}
+
+.login-box input:focus,
+.login-box select:focus {
+    outline: none;
+    border-color: #4A7C59;
+}
+
+.login-box button {
+    padding: 10px;
+    background-color: #4A7C59;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+}
+
+.login-box button:hover {
+    background-color: #414141;
+}
+
+.login-box p {
+    text-align: center;
+    margin-top: 12px;
+}
+
 /* ---------- Navigation ---------- */
 
 header {
-    border-bottom: 1px solid #ccc;
-    padding: 10px;
+    border-bottom: 2px solid #A3C4A8;
+    padding: 10px 20px;
+    background-color: white;
 }
 
 nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+nav h1 a {
+    color: #4A7C59;
+    text-decoration: none;
+}
+
+nav h1 a:hover {
+    color: #414141;
 }
 
 nav ul {
@@ -48,7 +116,12 @@ nav ul {
 
 nav a {
     text-decoration: none;
-    color: black;
+    color: #414141;
+    font-weight: bold;
+}
+
+nav a:hover {
+    color: #4A7C59;
 }
 
 /* ---------- Home / Marketplace ---------- */
@@ -57,50 +130,82 @@ main {
     padding: 20px;
 }
 
-.items,.orders {
+main > h2 {
+    color: #4A7C59;
+}
+
+.items, .orders {
     align-items: start;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
 }
 
-/* Normalize product images so files with bigger pixel dimensions don't render larger */
-.item img {
+.items .item a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.items .item img {
     display: block;
     width: 100%;
-    height: 100%;
+    height: 160px;
     max-width: 100%;
-    max-height: 100%;
-    object-fit: contain; /* show full image without cropping */
+    object-fit: contain;
 }
 
-.item,.order {
+.item img {
+    max-width: 100%;
+}
+
+.item, .order {
     height: 300px;
-    box-sizing: border-box; /* include padding in height calculations */
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* vertical centering */
-    align-items: center;     /* horizontal centering */
+    justify-content: center;
+    align-items: center;
     padding: 40px;
     text-align: center;
-    border: 10px solid rgb(65, 65, 65);
+    border: 4px solid #A3C4A8;
+    border-radius: 8px;
 }
 
+/* Items keep the charcoal background */
 .item {
-    background-color: rgb(65, 65, 65);
+    background-color: #414141;
     color: white;
+    transition: border-color 0.2s, transform 0.2s;
+}
+
+.item:hover {
+    border-color: #4A7C59;
+    transform: scale(1.05);
+}
+
+/* Orders get a white card look */
+.order {
+    background-color: white;
+    color: #414141;
+}
+
+.order a {
+    color: #4A7C59;
+    font-weight: bold;
 }
 
 .items > .item:only-child,
 .orders > .order:only-child {
-    grid-column: 2;       /* place the single card in the middle column */
-    justify-self: center; /* fill the column so width matches the normal card width */
-    width: 100%;          /* ensure the item occupies full column width */
+    grid-column: 2;
+    justify-self: center;
+    width: 100%;
     box-sizing: border-box;
-    color: rgb(65, 65, 65)
 }
 
-/* center an independent element to match the .items middle column */
+/* ---------- Centred layout (item detail, basket, profile, ordersUser) ---------- */
+
 .centered {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -109,67 +214,95 @@ main {
 }
 
 .centered > .description {
-    grid-column: 2; /* place into middle column */
-    justify-self: center; /* center the block in that column */
-    width: 100%; /* occupy full column width (like .item:only-child) */
-    max-width: 600px; /* same visual width as .item */
-    box-sizing: border-box; /* include padding + border in width */
+    grid-column: 2;
+    justify-self: center;
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
     padding: 40px;
-    border: 10px solid #ccc;
-    margin: 0; /* avoid margin collapse that can hide borders */
+    border: 4px solid #A3C4A8;
+    border-radius: 8px;
+    background-color: white;
+    margin: 0;
     display: block;
     text-align: center;
+    color: #414141;
 }
 
 .centered > .addToBasket {
-    grid-column: 2; /* place into middle column */
-    justify-self: center; /* center the block in that column */
-    width: 100%; /* occupy full column width (like .item:only-child) */
-    max-width: 600px; /* same visual width as .item */
-    box-sizing: border-box; /* include padding + border in width */
-    margin: 0; /* avoid margin collapse that can hide borders */
+    grid-column: 2;
+    justify-self: center;
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+    margin: 0;
     display: block;
     text-align: center;
 }
-/* Basket container in middle column */
+
+.centered > .addToBasket button,
+button.addToBasket {
+    padding: 12px 24px;
+    background-color: #4A7C59;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.centered > .addToBasket button:hover,
+button.addToBasket:hover {
+    background-color: #414141;
+}
+
+/* ---------- Basket ---------- */
+
 .basket-items {
     display: flex;
-    flex-direction: column;  /* stack items vertically */
-    gap: 15px;               /* space between items */
-    grid-column: 2;          /* middle column of parent grid */
-    justify-self: center;    /* center column horizontally */
+    flex-direction: column;
+    gap: 15px;
+    grid-column: 2;
+    justify-self: center;
     width: 100%;
-    max-width: 600px;        /* match homepage box width */
+    max-width: 600px;
     box-sizing: border-box;
 }
 
-/* Each basket item styled like homepage boxes */
 .basket-items .item {
     padding: 40px;
-    border: 10px solid #ccc;
+    border: 4px solid #A3C4A8;
+    border-radius: 8px;
     text-align: center;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: auto; /* allow height to fit content */
+    height: auto;
+    background-color: #414141;
+    color: white;
 }
 
-/* Total and checkout buttons styled as a box like items */
 .basket-items .total,
 .basket-items .checkout {
-    padding: 40px;
-    border: 10px solid #ccc;
+    padding: 20px 40px;
+    border: 4px solid #A3C4A8;
+    border-radius: 8px;
     text-align: center;
     box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 15px;
+    background-color: white;
+    color: #414141;
 }
 
-/* Layout for the item row */
+/* ---------- Item controls (basket +/- buttons) ---------- */
+
 .item-controls {
     display: flex;
     align-items: center;
@@ -177,23 +310,21 @@ main {
     margin-top: 10px;
 }
 
-/* Groups the +/- and Qty text together */
 .controls-group {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-/* Ensures forms don't create unwanted line breaks */
 .qty-form, .remove-form {
     margin: 0;
     padding: 0;
 }
 
-/* Quantity buttons (+ and -) */
 .btn-qty {
-    background-color: #f4f4f4;
-    border: 1px solid #ddd;
+    background-color: #4A7C59;
+    color: white;
+    border: none;
     border-radius: 4px;
     width: 30px;
     height: 30px;
@@ -203,38 +334,108 @@ main {
 }
 
 .btn-qty:hover {
-    background-color: #e0e0e0;
+    background-color: #A3C4A8;
+    color: #414141;
 }
 
-/* The "Remove All" button */
 .btn-remove {
-    background-color: #ff4d4d;
+    background-color: darkred;
     color: white;
     border: none;
     padding: 6px 12px;
     border-radius: 4px;
     cursor: pointer;
+    font-weight: bold;
 }
 
 .btn-remove:hover {
-    background-color: #cc0000;
+    background-color: lightcoral;
+    color: #414141;
 }
+
+/* ---------- Checkout / Payment ---------- */
+
+.btn-checkout {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #4A7C59;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    font-family: inherit;
+}
+
+.btn-checkout:hover {
+    background-color: #414141;
+    color: white;
+}
+
+.payment-container {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 40px;
+    border: 4px solid #A3C4A8;
+    border-radius: 8px;
+    background-color: white;
+    text-align: center;
+}
+
+.payment-container h2 {
+    color: #4A7C59;
+}
+
+.btn-pay {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #4A7C59;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 1rem;
+    margin-bottom: 12px;
+}
+
+.btn-pay:hover {
+    background-color: #414141;
+}
+
+.btn-cancel {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #A3C4A8;
+    color: #414141;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.btn-cancel:hover {
+    background-color: #414141;
+    color: white;
+}
+
+/* ---------- Orders (admin) ---------- */
 
 .order-card {
     background: white;
-    border: 1px solid #ddd;
+    border: 4px solid #A3C4A8;
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .order-header {
     display: flex;
     justify-content: space-between;
-    border-bottom: 2px solid #f4f4f4;
+    border-bottom: 2px solid #A3C4A8;
     padding-bottom: 10px;
     margin-bottom: 15px;
+    color: #4A7C59;
 }
 
 .order-details {
@@ -245,12 +446,28 @@ main {
 
 .order-details th {
     text-align: left;
-    color: #666;
+    color: #4A7C59;
     font-size: 0.9rem;
 }
 
 .order-footer {
     text-align: right;
     font-size: 1.2rem;
-    color: #2c3e50;
+    color: #414141;
+}
+
+/* ---------- Empty state ---------- */
+
+.empty-msg {
+    grid-column: 2;
+    text-align: center;
+    padding: 40px;
+    background-color: white;
+    border: 4px solid #A3C4A8;
+    border-radius: 8px;
+}
+
+.empty-msg a {
+    color: #4A7C59;
+    font-weight: bold;
 }

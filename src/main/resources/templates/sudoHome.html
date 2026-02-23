@@ -23,12 +23,13 @@
 <!-- Main Content -->
 <main>
     <section class="items">
-        <div class="item"><a th:href="@{/editItem}" href="/editItem">Item</a></div>
-        <div class="item"><a th:href="@{/editItem}" href="/editItem">Item</a></div>
-        <div class="item"><a th:href="@{/editItem}" href="/editItem">Item</a></div>
-        <div class="item"><a th:href="@{/editItem}" href="/editItem">Item</a></div>
-        <div class="item"><a th:href="@{/editItem}" href="/editItem">Item</a></div>
-        <div class="item"><a th:href="@{/editItem}" href="/editItem">Item</a></div>
+        <div class="item" th:each="product : ${products}">
+            <a th:href="@{/editItem}">
+                <img th:if="${product.imageUrl != null}"
+                     th:src="${product.imageUrl}"
+                     th:alt="${product.name}" />
+            </a>
+        </div>
     </section>
 </main>
 

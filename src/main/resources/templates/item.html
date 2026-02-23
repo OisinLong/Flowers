@@ -20,10 +20,12 @@
 
 <main>
     <div class="items">
-        <!-- You could keep a box for the selected item if you like -->
         <div class="item">
-            <h2 th:text="${product.name}">Product Name</h2>
-            <p th:text="'Price: $' + ${product.price}">Price</p>
+            <a th:href="@{/item/{id}(id=${product.id})}">
+                <img th:if="${product.imageUrl != null}"
+                     th:src="${product.imageUrl}"
+                     th:alt="${product.name}" />
+            </a>
         </div>
     </div>
 
