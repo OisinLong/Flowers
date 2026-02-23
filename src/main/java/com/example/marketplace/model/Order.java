@@ -18,6 +18,7 @@ public class Order {
     private LocalDateTime orderDate;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Column(precision = 10, scale = 2)
     @JoinColumn(name = "order_id") // Creates a foreign key in the order_item table
     private List<OrderItem> items = new ArrayList<>();
 

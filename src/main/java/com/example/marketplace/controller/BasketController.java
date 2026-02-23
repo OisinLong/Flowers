@@ -82,7 +82,7 @@ public class BasketController {
         // 5. Wipe the session basket
         basketService.clear();
 
-        return "redirect:/ordersUser";
+        return "redirect:/home";
     }
 
 }

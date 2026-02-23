@@ -20,9 +20,12 @@
 
 <main>
     <section class="items">
-        <!-- Loop through products -->
         <div class="item" th:each="product : ${products}">
-            <a th:href="@{/item/{id}(id=${product.id})}" th:text="${product.name}">Product Name</a>
+            <a th:href="@{/item/{id}(id=${product.id})}">
+                <img th:if="${product.imageUrl != null}"
+                     th:src="@{${product.imageUrl}}"
+                     th:alt="${product.name}" />
+            </a>
         </div>
     </section>
 </main>

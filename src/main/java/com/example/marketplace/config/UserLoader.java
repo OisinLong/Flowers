@@ -24,19 +24,37 @@ public class UserLoader {
             return;
         }
 
-        User normalUser = new User();
-        normalUser.setUsername("oisin");
-        normalUser.setPassword("user123");
-        normalUser.setRole("USER");
+        User normalUser1 = new User();
+        normalUser1.setUsername("oisin");
+        normalUser1.setPassword("user123");
+        normalUser1.setRole("USER");
 
-        userRepo.save(normalUser);
+        User normalUser2 = new User();
+        normalUser2.setUsername("james");
+        normalUser2.setPassword("password");
+        normalUser2.setRole("USER");
 
-        User adminUser = new User();
-        adminUser.setUsername("admin");
-        adminUser.setPassword("admin123");
-        adminUser.setRole("ADMIN");
+        User normalUser3 = new User();
+        normalUser3.setUsername("rory");
+        normalUser3.setPassword("terenure");
+        normalUser3.setRole("USER");
 
-        userRepo.save(adminUser);
+        userRepo.save(normalUser1);
+        userRepo.save(normalUser2);
+        userRepo.save(normalUser3);
+
+        User adminUser1 = new User();
+        adminUser1.setUsername("admin");
+        adminUser1.setPassword("admin123");
+        adminUser1.setRole("ADMIN");
+
+        User adminUser2 = new User();
+        adminUser2.setUsername("sudo");
+        adminUser2.setPassword("sudo123");
+        adminUser2.setRole("ADMIN");
+
+        userRepo.save(adminUser1);
+        userRepo.save(adminUser2);
 
         System.out.println("UserLoader: Initial users successfully loaded into H2.");
     }

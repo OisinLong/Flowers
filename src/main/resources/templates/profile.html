@@ -1,0 +1,48 @@
+<!-- `src/main/resources/templates/profile.html` -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" th:href="@{/style.css}" href="/style.css">
+</head>
+<body>
+
+<header>
+    <nav>
+        <h1><a th:href="@{/home}" href="/home">Marketplace</a></h1>
+
+        <ul>
+            <li><a th:href="@{/profile}" href="/profile">Profile</a></li>
+            <li><a th:href="@{/ordersUser}" href="/ordersUser">Orders</a></li>
+            <li><a th:href="@{/basket}" href="/basket">Basket</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <h2>Your Profile</h2>
+
+    <div class="centered">
+        <div class="basket-items">
+            <div class="item">
+                <div class="item-info">
+                    <h3 th:text="${username}">Username</h3>
+                    <p>Account Status: <strong th:text="${status}">Active</strong></p>
+                </div>
+
+                <div class="item-controls">
+                    <div class="controls-group">
+                        <span class="qty-display">
+                            Total Spend:
+                            <strong th:text="'$' + ${#numbers.formatDecimal(totalSpend, 1, 2)}">$0.00</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

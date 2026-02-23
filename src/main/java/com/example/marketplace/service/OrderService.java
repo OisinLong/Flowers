@@ -27,7 +27,8 @@ public class OrderService {
         // 1. Create the main Order header
         Order order = new Order();
         order.setUsername(username);
-        order.setTotalAmount(total);
+        double roundedTotal = Math.round(total * 100.0) / 100.0; // Round to 2 decimal places
+        order.setTotalAmount(roundedTotal);
         order.setOrderDate(LocalDateTime.now());
 
         // 2. Convert each Product in the basket into a permanent OrderItem

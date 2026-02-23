@@ -20,13 +20,32 @@
     </nav>
 </header>
 
-<!-- Main Content -->
 <main>
-    <section class="orders">
-        <div class="order">
-            Order
+    <h2>Your Orders</h2>
+
+    <div class="centered">
+        <div th:if="${orders == null || orders.isEmpty()}" class="empty-msg">
+            <p>You haven't placed any orders yet.</p>
+            <a th:href="@{/home}">Go shopping!</a>
         </div>
-    </section>
+
+        <div th:if="${orders != null && !orders.isEmpty()}" class="basket-items">
+            <!-- Each order as a single item -->
+            <div class="item" th:each="order : ${orders}">
+                <div class="item-info">
+                    <h3 th:text="'Order #' + ${order.id}">Order #001</h3>
+                    <p th:text="${#temporals.format(order.orderDate, 'dd MMMM yyyy HH:mm')}">Date</p>
+                    <p th:text="${#lists.size(order.items)} + ' items'">3 items</p>
+                </div>
+
+                <div class="item-controls">
+                    <div class="controls-group">
+                        <span class="qty-display">Total: <strong th:text="'$' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}">$0.00</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 
 </body>
