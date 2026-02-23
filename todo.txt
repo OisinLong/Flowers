@@ -1,0 +1,5 @@
+- Adding item to homepage
+- Deleting item from homepage
+- Editing item on homepage
+- Viewing all orders in order history
+- Editing order status of orders
