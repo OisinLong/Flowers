@@ -2,6 +2,9 @@ package com.example.marketplace.controller;
 import com.example.marketplace.model.Product;
 import com.example.marketplace.repository.ProductRepository;
 import com.example.marketplace.service.ImageService;
+import com.example.marketplace.service.OrderService;
+import com.example.marketplace.model.User;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,11 +19,14 @@ public class SudoHomeController {
 
     private final ProductRepository productRepository;
     private final ImageService imageService;
+    private final OrderService orderService;
 
     public SudoHomeController(ProductRepository productRepository,
-                              ImageService imageService) {
+                              ImageService imageService,
+                              OrderService orderService) {
         this.productRepository = productRepository;
         this.imageService = imageService;
+        this.orderService = orderService;
     }
 
     @GetMapping("/sudoHome")
@@ -31,7 +37,8 @@ public class SudoHomeController {
     }
 
     @GetMapping("/orderHistory")
-    public String orderHistory() {
+    public String orderHistory(Model model) {
+        model.addAttribute("orders", orderService.findAllOrders());
         return "orderHistory";
     }
 
@@ -86,5 +93,16 @@ public class SudoHomeController {
         Product product = new Product(name, description, price, imageUrl);
         productRepository.save(product);
         return "redirect:/sudoHome";
+    }
+
+    @GetMapping("/sudoProfile")
+    public String sudoProfile(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("username", user.getUsername());
+        model.addAttribute("role", user.getRole());
+        return "sudoProfile";
     }
 }
