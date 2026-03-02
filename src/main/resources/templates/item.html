@@ -30,6 +30,13 @@
     </div>
 
     <div class="centered">
+        <!-- Price -->
+        <div class="description" style="font-size:1.4rem; font-weight:bold; color:#4A7C59;">
+            €<span th:text="${#numbers.formatDecimal(product.price, 1, 2)}">0.00</span>
+        </div>
+    </div>
+
+    <div class="centered">
         <!-- Your styled description div -->
         <div class="description" th:text="${product.description}">
             Product description here

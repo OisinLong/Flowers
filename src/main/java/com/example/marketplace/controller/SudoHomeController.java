@@ -5,6 +5,7 @@ import com.example.marketplace.service.ImageService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -34,9 +35,38 @@ public class SudoHomeController {
         return "orderHistory";
     }
 
-    @GetMapping("/editItem")
-    public String editItem() {
+    // Show the edit-item form pre-filled with the existing product data
+    @GetMapping("/editItem/{id}")
+    public String editItem(@PathVariable Long id, Model model) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        model.addAttribute("product", product);
+        model.addAttribute("images", imageService.getAvailableImages());
         return "editItem";
+    }
+
+    // Handle the edit-item form submission and update the product
+    @PostMapping("/editItem/{id}")
+    public String updateItem(@PathVariable Long id,
+                             @RequestParam String name,
+                             @RequestParam double price,
+                             @RequestParam String description,
+                             @RequestParam String imageFilename) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        product.setName(name);
+        product.setPrice(price);
+        product.setDescription(description);
+        product.setImageUrl("/images/" + imageFilename);
+        productRepository.save(product);
+        return "redirect:/sudoHome";
+    }
+
+    // Delete the product entirely and redirect back to sudoHome
+    @PostMapping("/deleteItem/{id}")
+    public String deleteItem(@PathVariable Long id) {
+        productRepository.deleteById(id);
+        return "redirect:/sudoHome";
     }
 
     // Show the add-item form with the list of available images

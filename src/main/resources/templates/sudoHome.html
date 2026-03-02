@@ -25,7 +25,7 @@
 <main>
     <section class="items">
         <div class="item" th:each="product : ${products}">
-            <a th:href="@{/editItem}">
+            <a th:href="@{/editItem/{id}(id=${product.id})}">
                 <img th:if="${product.imageUrl != null}"
                      th:src="${product.imageUrl}"
                      th:alt="${product.name}" />
