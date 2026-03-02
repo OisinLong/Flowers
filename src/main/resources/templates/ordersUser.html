@@ -35,6 +35,8 @@
                 <div class="item-info">
                     <h3 th:text="'Order #' + ${order.id}">Order #001</h3>
                     <p th:text="${#temporals.format(order.orderDate, 'dd MMMM yyyy HH:mm')}">Date</p>
+                    <p th:text="'Status: ' + ${order.status}">Order Status</p>
+
                     <p th:text="${#lists.size(order.items)} + ' items'">3 items</p>
                 </div>
 

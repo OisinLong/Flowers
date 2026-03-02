@@ -9,4 +9,7 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     // This allows you to show a specific user their history
     List<Order> findByUsername(String username);
+
+    // Filter all orders by a given status (e.g. "Processing" or "Delivered")
+    List<Order> findByStatus(String status);
 }

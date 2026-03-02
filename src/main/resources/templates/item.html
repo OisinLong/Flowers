@@ -50,6 +50,16 @@
             </form>
         </div>
     </div>
+
+    <div class="centered">
+        <div class="addToBasket">
+            <form th:action="@{/favourites/toggle/{id}(id=${product.id})}" method="post">
+                <button type="submit" class="btn-fav"
+                        th:classappend="${isFavourited} ? 'favourited'"
+                        th:text="${isFavourited} ? '♥ Favourited' : '♡ Favourite'">♡ Favourite</button>
+            </form>
+        </div>
+    </div>
 </main>
 
 </body>

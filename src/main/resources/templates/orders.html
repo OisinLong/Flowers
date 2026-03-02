@@ -13,7 +13,8 @@
         <h1><a th:href="@{/sudoHome}" href="/sudoHome">Marketplace</a></h1>
 
         <ul>
-            <li><a th:href="@{/profile}" href="/profile">Profile</a></li>
+            <li><a th:href="@{/addItem}" href="/addItem">Add Item</a></li>
+            <li><a th:href="@{/sudoProfile}" href="/sudoProfile">Profile</a></li>
             <li><a th:href="@{/orderHistory}" href="/orderHistory">Order History</a></li>
             <li><a th:href="@{/orders}" href="/orders">Orders</a></li>
         </ul>
@@ -22,12 +23,40 @@
 
 <!-- Main Content -->
 <main>
-    <section class="orders">
-        <div class="order">
-            Order
-            <div><a th:href="@{/editOrder}" href="/editOrder">Edit</a></div>
+    <h2>Active Orders</h2>
+
+    <div class="centered">
+        <!-- Empty state -->
+        <div th:if="${orders == null || orders.isEmpty()}" class="empty-msg">
+            <p>No active orders at the moment.</p>
         </div>
-    </section>
+
+        <!-- Orders list -->
+        <div th:if="${orders != null && !orders.isEmpty()}" class="basket-items">
+            <div class="item" th:each="order : ${orders}">
+                <div class="item-info">
+                    <h3 th:text="'Order #' + ${order.id}">Order #001</h3>
+                    <p><strong>User:</strong> <span th:text="${order.username}">username</span></p>
+                    <p th:text="${#temporals.format(order.orderDate, 'dd MMMM yyyy HH:mm')}">Date</p>
+                    <p th:text="${#lists.size(order.items)} + ' item(s)'">3 items</p>
+                    <p><strong>Status:</strong> <span th:text="${order.status}">Processing</span></p>
+                </div>
+                <div class="item-controls">
+                    <div class="controls-group">
+                        <span class="qty-display">Total: <strong th:text="'€' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}">€0.00</strong></span>
+                    </div>
+                    <!-- Status update dropdown — POSTs to /orders/updateStatus/{id} -->
+                    <form th:action="@{/orders/updateStatus/{id}(id=${order.id})}" method="post" class="status-form">
+                        <select name="status" class="status-select">
+                            <option value="Processing" th:selected="${order.status == 'Processing'}">Processing</option>
+                            <option value="Delivered" th:selected="${order.status == 'Delivered'}">Delivered</option>
+                        </select>
+                        <button type="submit" class="btn-update">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 
 </body>

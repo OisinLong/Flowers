@@ -1,7 +1,9 @@
 package com.example.marketplace.controller;
+import com.example.marketplace.model.Favourite;
 import com.example.marketplace.model.Order;
 import com.example.marketplace.model.Product;
 import com.example.marketplace.model.User;
+import com.example.marketplace.repository.FavouriteRepository;
 import com.example.marketplace.repository.OrderRepository;
 import com.example.marketplace.repository.ProductRepository;
 import com.example.marketplace.service.OrderService;
@@ -9,6 +11,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -19,19 +22,49 @@ public class HomeController {
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
     private final OrderService orderService;
+    private final FavouriteRepository favouriteRepository;
 
     public HomeController(ProductRepository productRepository,
                           OrderRepository orderRepository,
-                          OrderService orderService) {
+                          OrderService orderService,
+                          FavouriteRepository favouriteRepository) {
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
         this.orderService = orderService;
+        this.favouriteRepository = favouriteRepository;
     }
 
     @GetMapping("/home")
-    public String home(Model model) {
-        List<Product> products = productRepository.findAll();
-        model.addAttribute("products", products); // add all products
+    public String home(
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false, defaultValue = "asc") String sort,
+            Model model) {
+
+        // Find the overall min and max prices in the catalogue for the slider bounds
+        List<Product> all = productRepository.findAll();
+        double overallMin = all.stream().mapToDouble(Product::getPrice).min().orElse(0);
+        double overallMax = all.stream().mapToDouble(Product::getPrice).max().orElse(1000);
+
+        // Default to full range if not supplied
+        if (minPrice == null) minPrice = overallMin;
+        if (maxPrice == null) maxPrice = overallMax;
+
+        // Fetch filtered + sorted products
+        List<Product> products;
+        if ("desc".equals(sort)) {
+            products = productRepository.findByPriceBetweenDesc(minPrice, maxPrice);
+        } else {
+            products = productRepository.findByPriceBetweenAsc(minPrice, maxPrice);
+        }
+
+        model.addAttribute("products", products);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("overallMin", overallMin);
+        model.addAttribute("overallMax", overallMax);
+        model.addAttribute("sort", sort);
+
         return "home";
     }
 
@@ -54,9 +87,18 @@ public class HomeController {
     }
 
     @GetMapping("/item/{id}")
-    public String item(@PathVariable Long id, Model model) {
+    public String item(@PathVariable Long id, HttpSession session, Model model) {
         Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
         model.addAttribute("product", product);
+
+        // Check if the current user has this product favourited
+        User user = (User) session.getAttribute("user");
+        boolean isFavourited = false;
+        if (user != null) {
+            isFavourited = favouriteRepository.findByUsernameAndProduct_Id(user.getUsername(), id) != null;
+        }
+        model.addAttribute("isFavourited", isFavourited);
+
         return "item";
     }
 
@@ -78,6 +120,10 @@ public class HomeController {
         model.addAttribute("username", username);
         model.addAttribute("status", status);
         model.addAttribute("totalSpend", totalSpend);
+
+        // Load this user's favourites for the horizontal scroller
+        List<Favourite> favourites = favouriteRepository.findByUsername(username);
+        model.addAttribute("favourites", favourites);
 
         return "profile";
     }

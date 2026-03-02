@@ -39,9 +39,34 @@
                         </span>
                     </div>
                 </div>
+
+                <div style="margin-top: 16px;">
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn-remove">Logout</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Favourites horizontal scroller -->
+    <h2>Favourites</h2>
+
+    <div class="favourites-scroller" th:if="${!favourites.isEmpty()}">
+        <div class="fav-card" th:each="fav : ${favourites}">
+            <form th:action="@{/favourites/remove/{id}(id=${fav.product.id})}" method="post">
+                <button type="submit" class="btn-unfav">✕</button>
+            </form>
+            <a th:href="@{/item/{id}(id=${fav.product.id})}">
+                <img th:src="${fav.product.imageUrl}" th:alt="${fav.product.name}" />
+                <span th:text="${fav.product.name}">Product</span>
+            </a>
+        </div>
+    </div>
+
+    <p th:if="${favourites.isEmpty()}" style="text-align:center; color:#414141;">
+        No favourites yet — <a th:href="@{/home}">browse the marketplace!</a>
+    </p>
 </main>
 
 </body>

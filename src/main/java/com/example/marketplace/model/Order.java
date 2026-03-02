@@ -16,6 +16,7 @@ public class Order {
     private String username;
     private Double totalAmount;
     private LocalDateTime orderDate;
+    private String status;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Column(precision = 10, scale = 2)
@@ -37,6 +38,9 @@ public class Order {
 
     public LocalDateTime getOrderDate() { return orderDate; }
     public void setOrderDate(LocalDateTime orderDate) { this.orderDate = orderDate; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
     public List<OrderItem> getItems() { return items; }
     public void setItems(List<OrderItem> items) { this.items = items; }

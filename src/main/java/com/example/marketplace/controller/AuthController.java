@@ -49,4 +49,11 @@ public class AuthController {
     public String doRegister() {
         return "redirect:/login";
     }
+
+    // Logout: invalidate the session and redirect to login
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
+    }
 }

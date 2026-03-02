@@ -36,11 +36,6 @@ public class SudoHomeController {
         return "sudoHome";
     }
 
-    @GetMapping("/orderHistory")
-    public String orderHistory(Model model) {
-        model.addAttribute("orders", orderService.findAllOrders());
-        return "orderHistory";
-    }
 
     // Show the edit-item form pre-filled with the existing product data
     @GetMapping("/editItem/{id}")

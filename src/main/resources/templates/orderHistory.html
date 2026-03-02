@@ -28,7 +28,7 @@
     <div class="centered">
         <!-- Empty state -->
         <div th:if="${orders == null || orders.isEmpty()}" class="empty-msg">
-            <p>No orders have been placed yet.</p>
+            <p>No delivered orders yet.</p>
         </div>
 
         <!-- Orders list -->
@@ -39,6 +39,7 @@
                     <p><strong>User:</strong> <span th:text="${order.username}">username</span></p>
                     <p th:text="${#temporals.format(order.orderDate, 'dd MMMM yyyy HH:mm')}">Date</p>
                     <p th:text="${#lists.size(order.items)} + ' item(s)'">3 items</p>
+                    <p><strong>Status:</strong> <span th:text="${order.status}">Delivered</span></p>
                 </div>
                 <div class="item-controls">
                     <div class="controls-group">

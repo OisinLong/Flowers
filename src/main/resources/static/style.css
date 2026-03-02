@@ -420,6 +420,46 @@ button.addToBasket:hover {
 
 /* ---------- Orders (admin) ---------- */
 
+.status-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.status-select {
+    padding: 6px 10px;
+    border: 2px solid #A3C4A8;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    background-color: #EAF4E8;
+    color: #414141;
+    cursor: pointer;
+}
+
+.status-select:focus {
+    outline: none;
+    border-color: #4A7C59;
+}
+
+.btn-update {
+    padding: 6px 14px;
+    background-color: #4A7C59;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.btn-update:hover {
+    background-color: #414141;
+}
+
 .order-card {
     background: white;
     border: 4px solid #A3C4A8;
@@ -471,3 +511,262 @@ button.addToBasket:hover {
     color: #4A7C59;
     font-weight: bold;
 }
+
+/* ---------- Filter Panel ---------- */
+
+.filter-panel {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    background-color: white;
+    border: 2px solid #A3C4A8;
+    border-radius: 8px;
+    padding: 14px 20px;
+    margin-bottom: 20px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.filter-group label {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #414141;
+}
+
+/* Dual-handle range slider */
+.dual-range-wrapper {
+    position: relative;
+    width: 240px;
+    height: 36px;
+}
+
+/* The grey background track */
+.dual-range-track {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 6px;
+    transform: translateY(-50%);
+    background: #A3C4A8;
+    border-radius: 3px;
+    pointer-events: none;
+}
+
+/* The green fill between the two handles */
+.dual-range-fill {
+    position: absolute;
+    height: 100%;
+    background: #4A7C59;
+    border-radius: 3px;
+}
+
+/* Both range inputs sit on top of each other, fully transparent */
+.dual-range-input {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    transform: translateY(-50%);
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    pointer-events: none;
+    height: 6px;
+    margin: 0;
+}
+
+/* Re-enable pointer events only on the thumb */
+.dual-range-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    pointer-events: all;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #4A7C59;
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.dual-range-input::-webkit-slider-thumb:hover {
+    background: #414141;
+}
+
+.dual-range-input::-moz-range-thumb {
+    pointer-events: all;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #4A7C59;
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.dual-range-input::-moz-range-thumb:hover {
+    background: #414141;
+}
+
+.filter-group select {
+    padding: 6px 10px;
+    border: 1px solid #A3C4A8;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    background-color: #EAF4E8;
+    color: #414141;
+    cursor: pointer;
+}
+
+.filter-group select:focus {
+    outline: none;
+    border-color: #4A7C59;
+}
+
+.filter-panel button {
+    padding: 8px 18px;
+    background-color: #4A7C59;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 0.9rem;
+    align-self: flex-end;
+}
+
+.filter-panel button:hover {
+    background-color: #414141;
+}
+
+/* ---------- Favourites ---------- */
+
+/* Horizontal scrolling container */
+.favourites-scroller {
+    display: flex;
+    overflow-x: auto;
+    gap: 15px;
+    padding: 15px 0;
+    scrollbar-width: thin;
+    scrollbar-color: #4A7C59 #EAF4E8;
+}
+
+.favourites-scroller::-webkit-scrollbar {
+    height: 8px;
+}
+
+.favourites-scroller::-webkit-scrollbar-track {
+    background: #EAF4E8;
+    border-radius: 4px;
+}
+
+.favourites-scroller::-webkit-scrollbar-thumb {
+    background: #4A7C59;
+    border-radius: 4px;
+}
+
+.favourites-scroller::-webkit-scrollbar-thumb:hover {
+    background: #414141;
+}
+
+/* Individual favourite card — mirrors .item styling */
+.fav-card {
+    flex: 0 0 auto;
+    width: 200px;
+    height: 220px;
+    background-color: #414141;
+    border: 4px solid #A3C4A8;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: border-color 0.2s, transform 0.2s;
+}
+
+.fav-card:hover {
+    border-color: #4A7C59;
+    transform: scale(1.05);
+}
+
+.fav-card a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+}
+
+.fav-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: contain;
+}
+
+.fav-card span {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: white;
+}
+
+/* ✕ remove button — top-right corner of fav card */
+.btn-unfav {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: darkred;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    line-height: 24px;
+    text-align: center;
+    z-index: 1;
+}
+
+.btn-unfav:hover {
+    background: lightcoral;
+    color: #414141;
+}
+
+/* Favourite toggle button on item page */
+.btn-fav {
+    padding: 12px 24px;
+    background-color: #A3C4A8;
+    color: #414141;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.btn-fav:hover {
+    background-color: #4A7C59;
+    color: white;
+}
+
+/* Filled-heart state when already favourited */
+.btn-fav.favourited {
+    background-color: #4A7C59;
+    color: white;
+}
+
+.btn-fav.favourited:hover {
+    background-color: #414141;
+}
+

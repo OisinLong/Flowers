@@ -29,6 +29,7 @@ public class OrderService {
         order.setUsername(username);
         double roundedTotal = Math.round(total * 100.0) / 100.0; // Round to 2 decimal places
         order.setTotalAmount(roundedTotal);
+        order.setStatus("Processing");
         order.setOrderDate(LocalDateTime.now());
 
         // 2. Convert each Product in the basket into a permanent OrderItem
@@ -62,5 +63,23 @@ public class OrderService {
      */
     public List<Order> findAllOrders() {
         return orderRepository.findAll();
+    }
+
+    /**
+     * Returns only orders with the given status (e.g. "Processing" or "Delivered").
+     */
+    public List<Order> findOrdersByStatus(String status) {
+        return orderRepository.findByStatus(status);
+    }
+
+    /**
+     * Updates the status of a single order and persists the change to the DB.
+     */
+    @Transactional
+    public void updateOrderStatus(Long orderId, String newStatus) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+        order.setStatus(newStatus);
+        orderRepository.save(order);
     }
 }
