@@ -19,4 +19,15 @@ public class AuthService {
         }
         return null;
     }
+
+    // Verify the current password and update to the new one
+    public boolean changePassword(String username, String currentPassword, String newPassword) {
+        User user = userRepository.findByUsername(username);
+        if (user != null && user.getPassword().equals(currentPassword)) {
+            user.setPassword(newPassword);
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
 }

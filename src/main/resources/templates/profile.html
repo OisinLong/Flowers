@@ -35,12 +35,13 @@
                     <div class="controls-group">
                         <span class="qty-display">
                             Total Spend:
-                            <strong th:text="'$' + ${#numbers.formatDecimal(totalSpend, 1, 2)}">$0.00</strong>
+                            <strong th:text="'€' + ${#numbers.formatDecimal(totalSpend, 1, 2)}">€0.00</strong>
                         </span>
                     </div>
                 </div>
 
-                <div style="margin-top: 16px;">
+                <div style="margin-top: 16px; display: flex; gap: 10px; justify-content: center;">
+                    <a th:href="@{/changePassword}" class="btn-checkout">Change Password</a>
                     <form th:action="@{/logout}" method="post">
                         <button type="submit" class="btn-remove">Logout</button>
                     </form>

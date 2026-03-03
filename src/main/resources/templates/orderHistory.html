@@ -25,6 +25,13 @@
 <main>
     <h2>Order History</h2>
 
+    <!-- Total Revenue Counter -->
+    <div class="centered">
+        <p style="font-size: 1.3rem; font-weight: bold; color: #4A7C59;">
+            Total Revenue: €<span th:text="${#numbers.formatDecimal(totalRevenue, 1, 2)}">0.00</span>
+        </p>
+    </div>
+
     <div class="centered">
         <!-- Empty state -->
         <div th:if="${orders == null || orders.isEmpty()}" class="empty-msg">

@@ -2,6 +2,7 @@ package com.example.marketplace.controller;
 import com.example.marketplace.model.Product;
 import com.example.marketplace.repository.ProductRepository;
 import com.example.marketplace.service.ImageService;
+import com.example.marketplace.service.AuthService;
 import com.example.marketplace.service.OrderService;
 import com.example.marketplace.model.User;
 import jakarta.servlet.http.HttpSession;
@@ -20,19 +21,49 @@ public class SudoHomeController {
     private final ProductRepository productRepository;
     private final ImageService imageService;
     private final OrderService orderService;
+    private final AuthService authService;
 
     public SudoHomeController(ProductRepository productRepository,
                               ImageService imageService,
-                              OrderService orderService) {
+                              OrderService orderService,
+                              AuthService authService) {
         this.productRepository = productRepository;
         this.imageService = imageService;
         this.orderService = orderService;
+        this.authService = authService;
     }
 
     @GetMapping("/sudoHome")
-    public String sudoHome(Model model) {
-        List<Product> products = productRepository.findAll();
+    public String sudoHome(
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false, defaultValue = "asc") String sort,
+            Model model) {
+
+        // Compute overall price bounds for the slider
+        List<Product> all = productRepository.findAll();
+        double overallMin = all.stream().mapToDouble(Product::getPrice).min().orElse(0);
+        double overallMax = all.stream().mapToDouble(Product::getPrice).max().orElse(1000);
+
+        // Default to full range if not supplied
+        if (minPrice == null) minPrice = overallMin;
+        if (maxPrice == null) maxPrice = overallMax;
+
+        // Fetch filtered + sorted products
+        List<Product> products;
+        if ("desc".equals(sort)) {
+            products = productRepository.findByPriceBetweenDesc(minPrice, maxPrice);
+        } else {
+            products = productRepository.findByPriceBetweenAsc(minPrice, maxPrice);
+        }
+
         model.addAttribute("products", products);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("overallMin", overallMin);
+        model.addAttribute("overallMax", overallMax);
+        model.addAttribute("sort", sort);
+
         return "sudoHome";
     }
 
@@ -99,5 +130,39 @@ public class SudoHomeController {
         model.addAttribute("username", user.getUsername());
         model.addAttribute("role", user.getRole());
         return "sudoProfile";
+    }
+
+    // Show the admin change password page
+    @GetMapping("/sudoChangePassword")
+    public String showChangePassword(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        return "sudoChangePassword";
+    }
+
+    // Handle password change from the admin change password page
+    @PostMapping("/sudoChangePassword")
+    public String changePassword(@RequestParam String currentPassword,
+                                 @RequestParam String newPassword,
+                                 @RequestParam String confirmPassword,
+                                 HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        // Check that new password and confirmation match
+        if (!newPassword.equals(confirmPassword)) {
+            return "redirect:/sudoChangePassword?pwError=mismatch";
+        }
+
+        // Attempt password change via AuthService
+        boolean changed = authService.changePassword(user.getUsername(), currentPassword, newPassword);
+        if (changed) {
+            return "redirect:/sudoChangePassword?pwSuccess=true";
+        }
+        return "redirect:/sudoChangePassword?pwError=wrong";
     }
 }

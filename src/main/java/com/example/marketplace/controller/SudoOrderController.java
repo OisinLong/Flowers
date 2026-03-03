@@ -26,10 +26,16 @@ public class SudoOrderController {
         return "redirect:/orders";
     }
 
-    // Shows only "Delivered" orders in order history
+    // Shows only "Delivered" orders in order history with total revenue
     @GetMapping("/orderHistory")
     public String orderHistory(Model model) {
-        model.addAttribute("orders", orderService.findOrdersByStatus("Delivered"));
+        var orders = orderService.findOrdersByStatus("Delivered");
+        // Sum up the total amount of every delivered order
+        double totalRevenue = orders.stream()
+                .map(o -> o.getTotalAmount() == null ? 0.0 : o.getTotalAmount())
+                .reduce(0.0, Double::sum);
+        model.addAttribute("orders", orders);
+        model.addAttribute("totalRevenue", totalRevenue);
         return "orderHistory";
     }
 

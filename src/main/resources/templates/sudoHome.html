@@ -23,6 +23,44 @@
 
 <!-- Main Content -->
 <main>
+    <!-- Filter Panel -->
+    <form class="filter-panel" method="get" th:action="@{/sudoHome}" id="filterForm">
+
+        <!-- Hidden inputs submitted with the form -->
+        <input type="hidden" id="minPriceInput" name="minPrice" th:value="${minPrice}">
+        <input type="hidden" id="maxPriceInput" name="maxPrice" th:value="${maxPrice}">
+
+        <div class="filter-group">
+            <label>Price Range:
+                <strong>€<span id="minDisplay"></span></strong>
+                —
+                <strong>€<span id="maxDisplay"></span></strong>
+            </label>
+            <!-- Dual-handle slider track -->
+            <div class="dual-range-wrapper">
+                <div class="dual-range-track">
+                    <div class="dual-range-fill" id="rangeFill"></div>
+                </div>
+                <input type="range" class="dual-range-input" id="minRange" aria-label="Minimum price"
+                       th:min="${overallMin}" th:max="${overallMax}" step="0.01" th:value="${minPrice}"
+                       oninput="updateDualRange()">
+                <input type="range" class="dual-range-input" id="maxRange" aria-label="Maximum price"
+                       th:min="${overallMin}" th:max="${overallMax}" step="0.01" th:value="${maxPrice}"
+                       oninput="updateDualRange()">
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <label for="sortSelect">Sort by price:</label>
+            <select id="sortSelect" name="sort">
+                <option value="asc"  th:selected="${sort == 'asc'}">Low → High</option>
+                <option value="desc" th:selected="${sort == 'desc'}">High → Low</option>
+            </select>
+        </div>
+
+        <button type="submit">Apply</button>
+    </form>
+
     <section class="items">
         <div class="item" th:each="product : ${products}">
             <a th:href="@{/editItem/{id}(id=${product.id})}">
@@ -33,6 +71,46 @@
         </div>
     </section>
 </main>
+
+<script th:inline="javascript">
+    const overallMin = /*[[${overallMin}]]*/ 0;
+    const overallMax = /*[[${overallMax}]]*/ 1000;
+
+    const minR   = document.getElementById('minRange');
+    const maxR   = document.getElementById('maxRange');
+    const fill   = document.getElementById('rangeFill');
+    const minIn  = document.getElementById('minPriceInput');
+    const maxIn  = document.getElementById('maxPriceInput');
+    const minD   = document.getElementById('minDisplay');
+    const maxD   = document.getElementById('maxDisplay');
+
+    function updateDualRange() {
+        let lo = parseFloat(minR.value);
+        let hi = parseFloat(maxR.value);
+
+        // Clamp so handles cannot cross
+        if (lo > hi) { lo = hi; minR.value = lo; }
+        if (hi < lo) { hi = lo; maxR.value = hi; }
+
+        // Update the colour fill between handles
+        const range = overallMax - overallMin;
+        const leftPct  = ((lo - overallMin) / range) * 100;
+        const rightPct = ((hi - overallMin) / range) * 100;
+        fill.style.left  = leftPct  + '%';
+        fill.style.width = (rightPct - leftPct) + '%';
+
+        // Update visible labels
+        minD.textContent = lo.toFixed(2);
+        maxD.textContent = hi.toFixed(2);
+
+        // Keep hidden form inputs in sync (submitted on Apply)
+        minIn.value = lo;
+        maxIn.value = hi;
+    }
+
+    // Initialise on page load
+    updateDualRange();
+</script>
 
 </body>
 </html>

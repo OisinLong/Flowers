@@ -30,7 +30,8 @@
                     <p>Account Status: <strong th:text="${role}">ADMIN</strong></p>
                 </div>
 
-                <div style="margin-top: 16px;">
+                <div style="margin-top: 16px; display: flex; gap: 10px; justify-content: center;">
+                    <a th:href="@{/sudoChangePassword}" class="btn-checkout">Change Password</a>
                     <form th:action="@{/logout}" method="post">
                         <button type="submit" class="btn-remove">Logout</button>
                     </form>

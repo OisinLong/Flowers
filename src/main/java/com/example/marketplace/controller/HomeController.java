@@ -6,11 +6,13 @@ import com.example.marketplace.model.User;
 import com.example.marketplace.repository.FavouriteRepository;
 import com.example.marketplace.repository.OrderRepository;
 import com.example.marketplace.repository.ProductRepository;
+import com.example.marketplace.service.AuthService;
 import com.example.marketplace.service.OrderService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,15 +25,18 @@ public class HomeController {
     private final OrderRepository orderRepository;
     private final OrderService orderService;
     private final FavouriteRepository favouriteRepository;
+    private final AuthService authService;
 
     public HomeController(ProductRepository productRepository,
                           OrderRepository orderRepository,
                           OrderService orderService,
-                          FavouriteRepository favouriteRepository) {
+                          FavouriteRepository favouriteRepository,
+                          AuthService authService) {
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
         this.orderService = orderService;
         this.favouriteRepository = favouriteRepository;
+        this.authService = authService;
     }
 
     @GetMapping("/home")
@@ -126,6 +131,40 @@ public class HomeController {
         model.addAttribute("favourites", favourites);
 
         return "profile";
+    }
+
+    // Show the change password page
+    @GetMapping("/changePassword")
+    public String showChangePassword(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        return "changePassword";
+    }
+
+    // Handle password change from the change password page
+    @PostMapping("/changePassword")
+    public String changePassword(@RequestParam String currentPassword,
+                                 @RequestParam String newPassword,
+                                 @RequestParam String confirmPassword,
+                                 HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        // Check that new password and confirmation match
+        if (!newPassword.equals(confirmPassword)) {
+            return "redirect:/changePassword?pwError=mismatch";
+        }
+
+        // Attempt password change via AuthService
+        boolean changed = authService.changePassword(user.getUsername(), currentPassword, newPassword);
+        if (changed) {
+            return "redirect:/changePassword?pwSuccess=true";
+        }
+        return "redirect:/changePassword?pwError=wrong";
     }
 
 }
