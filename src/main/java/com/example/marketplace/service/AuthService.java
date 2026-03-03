@@ -20,6 +20,17 @@ public class AuthService {
         return null;
     }
 
+    // Check if a username is already taken
+    public boolean userExists(String username) {
+        return userRepository.findByUsername(username) != null;
+    }
+
+    // Save a new user to the database
+    public void registerUser(String username, String password, String role) {
+        User user = new User(username, password, role);
+        userRepository.save(user);
+    }
+
     // Verify the current password and update to the new one
     public boolean changePassword(String username, String currentPassword, String newPassword) {
         User user = userRepository.findByUsername(username);

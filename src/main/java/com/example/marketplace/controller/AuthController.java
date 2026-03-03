@@ -46,8 +46,16 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String doRegister() {
-        return "redirect:/login";
+    public String doRegister(@RequestParam String username,
+                             @RequestParam String password,
+                             @RequestParam String role) {
+        // Check if username already exists
+        if (authService.userExists(username)) {
+            return "redirect:/register?error=exists";
+        }
+        // Save the new user to the database
+        authService.registerUser(username, password, role);
+        return "redirect:/login?registered=true";
     }
 
     // Logout: invalidate the session and redirect to login

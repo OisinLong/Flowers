@@ -1,6 +1,8 @@
 package com.example.marketplace.controller;
 
+import com.example.marketplace.model.User;
 import com.example.marketplace.service.OrderService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +16,12 @@ public class SudoOrderController {
 
     // Shows all orders currently in "Processing" status
     @GetMapping("/orders")
-    public String orders(Model model) {
+    public String orders(HttpSession session, Model model) {
+        // Role guard: only admins can view all orders
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+        if (!"admin".equalsIgnoreCase(user.getRole())) return "redirect:/home";
+
         model.addAttribute("orders", orderService.findOrdersByStatus("Processing"));
         return "orders";
     }
@@ -28,7 +35,12 @@ public class SudoOrderController {
 
     // Shows only "Delivered" orders in order history with total revenue
     @GetMapping("/orderHistory")
-    public String orderHistory(Model model) {
+    public String orderHistory(HttpSession session, Model model) {
+        // Role guard: only admins can view order history
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+        if (!"admin".equalsIgnoreCase(user.getRole())) return "redirect:/home";
+
         var orders = orderService.findOrdersByStatus("Delivered");
         // Sum up the total amount of every delivered order
         double totalRevenue = orders.stream()

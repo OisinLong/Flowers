@@ -9,7 +9,6 @@ import com.example.marketplace.repository.ProductRepository;
 import com.example.marketplace.service.AuthService;
 import com.example.marketplace.service.OrderService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,7 +43,13 @@ public class HomeController {
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
             @RequestParam(required = false, defaultValue = "asc") String sort,
+            HttpSession session,
             Model model) {
+
+        // Role guard: redirect admins to their own home page
+        User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) return "redirect:/login";
+        if ("admin".equalsIgnoreCase(sessionUser.getRole())) return "redirect:/sudoHome";
 
         // Find the overall min and max prices in the catalogue for the slider bounds
         List<Product> all = productRepository.findAll();

@@ -11,6 +11,10 @@
     <section class="login-box">
         <h1>Register</h1>
 
+        <p th:if="${param.error != null && param.error[0] == 'exists'}" style="color: darkred; font-weight: bold; text-align: center;">
+            Username already taken. Please choose another.
+        </p>
+
         <form method="post" th:action="@{/register}">
             <label>
                 Account type

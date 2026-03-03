@@ -38,7 +38,13 @@ public class SudoHomeController {
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
             @RequestParam(required = false, defaultValue = "asc") String sort,
+            HttpSession session,
             Model model) {
+
+        // Role guard: only admins can access this page
+        User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) return "redirect:/login";
+        if (!"admin".equalsIgnoreCase(sessionUser.getRole())) return "redirect:/home";
 
         // Compute overall price bounds for the slider
         List<Product> all = productRepository.findAll();
@@ -70,7 +76,12 @@ public class SudoHomeController {
 
     // Show the edit-item form pre-filled with the existing product data
     @GetMapping("/editItem/{id}")
-    public String editItem(@PathVariable Long id, Model model) {
+    public String editItem(@PathVariable Long id, HttpSession session, Model model) {
+        // Role guard: only admins can edit items
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+        if (!"admin".equalsIgnoreCase(user.getRole())) return "redirect:/home";
+
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         model.addAttribute("product", product);
@@ -104,7 +115,12 @@ public class SudoHomeController {
 
     // Show the add-item form with the list of available images
     @GetMapping("/addItem")
-    public String showAddItemForm(Model model) {
+    public String showAddItemForm(HttpSession session, Model model) {
+        // Role guard: only admins can add items
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+        if (!"admin".equalsIgnoreCase(user.getRole())) return "redirect:/home";
+
         model.addAttribute("images", imageService.getAvailableImages());
         return "addItem";
     }

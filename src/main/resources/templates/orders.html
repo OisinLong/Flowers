@@ -38,8 +38,16 @@
                     <h3 th:text="'Order #' + ${order.id}">Order #001</h3>
                     <p><strong>User:</strong> <span th:text="${order.username}">username</span></p>
                     <p th:text="${#temporals.format(order.orderDate, 'dd MMMM yyyy HH:mm')}">Date</p>
-                    <p th:text="${#lists.size(order.items)} + ' item(s)'">3 items</p>
                     <p><strong>Status:</strong> <span th:text="${order.status}">Processing</span></p>
+
+                    <!-- Order items breakdown -->
+                    <div style="margin-top:8px; text-align:left; font-size:0.85rem;">
+                        <p th:each="oi : ${order.items}">
+                            <span th:text="${oi.productName}">Item</span>
+                            × <span th:text="${oi.quantity}">1</span>
+                            — €<span th:text="${#numbers.formatDecimal(oi.priceAtPurchase, 1, 2)}">0.00</span> each
+                        </p>
+                    </div>
                 </div>
                 <div class="item-controls">
                     <div class="controls-group">

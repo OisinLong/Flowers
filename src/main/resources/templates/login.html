@@ -10,6 +10,13 @@
     <section class="login-box">
         <h1>Login</h1>
 
+        <p th:if="${param.error}" style="color: darkred; font-weight: bold; text-align: center;">
+            Invalid username or password.
+        </p>
+        <p th:if="${param.registered}" style="color: #4A7C59; font-weight: bold; text-align: center;">
+            Account created successfully! Please log in.
+        </p>
+
         <form method="post" th:action="@{/login}">
             <label>
                 Username

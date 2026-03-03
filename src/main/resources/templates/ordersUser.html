@@ -37,12 +37,19 @@
                     <p th:text="${#temporals.format(order.orderDate, 'dd MMMM yyyy HH:mm')}">Date</p>
                     <p th:text="'Status: ' + ${order.status}">Order Status</p>
 
-                    <p th:text="${#lists.size(order.items)} + ' items'">3 items</p>
+                    <!-- Order items breakdown -->
+                    <div style="margin-top:8px; text-align:left; font-size:0.85rem;">
+                        <p th:each="oi : ${order.items}">
+                            <span th:text="${oi.productName}">Item</span>
+                            × <span th:text="${oi.quantity}">1</span>
+                            — €<span th:text="${#numbers.formatDecimal(oi.priceAtPurchase, 1, 2)}">0.00</span> each
+                        </p>
+                    </div>
                 </div>
 
                 <div class="item-controls">
                     <div class="controls-group">
-                        <span class="qty-display">Total: <strong th:text="'$' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}">$0.00</strong></span>
+                        <span class="qty-display">Total: <strong th:text="'€' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}">€0.00</strong></span>
                     </div>
                 </div>
             </div>

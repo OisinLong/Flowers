@@ -18,7 +18,12 @@ public class BasketController {
     private OrderService orderService;
 
     @GetMapping("/basket")
-    public String viewBasket(Model model) {
+    public String viewBasket(HttpSession session, Model model) {
+        // Guard: must be logged in as a customer
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+        if ("admin".equalsIgnoreCase(user.getRole())) return "redirect:/sudoHome";
+
         // The Controller just asks the Service for data and passes it to the View
         model.addAttribute("items", basketService.getBasketContent());
         model.addAttribute("total", basketService.getTotalPrice());
