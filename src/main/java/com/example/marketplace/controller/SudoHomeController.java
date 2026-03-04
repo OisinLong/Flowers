@@ -95,7 +95,13 @@ public class SudoHomeController {
                              @RequestParam String name,
                              @RequestParam double price,
                              @RequestParam String description,
-                             @RequestParam String imageFilename) {
+                             @RequestParam String imageFilename,
+                             HttpSession session) {
+        // Role guard: only admins can update items
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+        if (!"admin".equalsIgnoreCase(user.getRole())) return "redirect:/home";
+
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         product.setName(name);
@@ -108,7 +114,12 @@ public class SudoHomeController {
 
     // Delete the product entirely and redirect back to sudoHome
     @PostMapping("/deleteItem/{id}")
-    public String deleteItem(@PathVariable Long id) {
+    public String deleteItem(@PathVariable Long id, HttpSession session) {
+        // Role guard: only admins can delete items
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+        if (!"admin".equalsIgnoreCase(user.getRole())) return "redirect:/home";
+
         productRepository.deleteById(id);
         return "redirect:/sudoHome";
     }
@@ -130,7 +141,13 @@ public class SudoHomeController {
     public String addItem(@RequestParam String name,
                           @RequestParam double price,
                           @RequestParam String description,
-                          @RequestParam String imageFilename) {
+                          @RequestParam String imageFilename,
+                          HttpSession session) {
+        // Role guard: only admins can add items
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+        if (!"admin".equalsIgnoreCase(user.getRole())) return "redirect:/home";
+
         String imageUrl = "/images/" + imageFilename;
         Product product = new Product(name, description, price, imageUrl);
         productRepository.save(product);

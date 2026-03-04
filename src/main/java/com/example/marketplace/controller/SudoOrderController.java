@@ -28,7 +28,12 @@ public class SudoOrderController {
 
     // Receives the dropdown form submission and updates the order status in the DB
     @PostMapping("/orders/updateStatus/{id}")
-    public String updateStatus(@PathVariable Long id, @RequestParam String status) {
+    public String updateStatus(@PathVariable Long id, @RequestParam String status, HttpSession session) {
+        // Role guard: only admins can update order status
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+        if (!"admin".equalsIgnoreCase(user.getRole())) return "redirect:/home";
+
         orderService.updateOrderStatus(id, status);
         return "redirect:/orders";
     }
