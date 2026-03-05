@@ -14,12 +14,10 @@ public class UserLoader {
         this.userRepo = userRepo;
     }
 
-    /**
-     * Automatically runs on startup to populate users in the H2 database.
-     */
+    /* seeds the db with a few users on first run */
     @PostConstruct
     public void loadUserData() {
-        // Prevent duplicate users if the file-based database already exists
+        // don't double-insert if the file db is already there
         if (userRepo.count() > 0) {
             return;
         }

@@ -18,63 +18,51 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    /**
-     * Transforms the session basket into a permanent database record.
-     * @Transactional ensures that the Order and all OrderItems are saved as a single unit.
-     */
+    /* turns the session basket into real order rows in h2 */
     @Transactional
     public void saveOrder(String username, Map<Product, Integer> basketContent, double total) {
-        // 1. Create the main Order header
+        // 1. order header (high level stuff)
         Order order = new Order();
         order.setUsername(username);
-        double roundedTotal = Math.round(total * 100.0) / 100.0; // Round to 2 decimal places
+        double roundedTotal = Math.round(total * 100.0) / 100.0; // keep it tidy for display
         order.setTotalAmount(roundedTotal);
         order.setStatus("Processing");
         order.setOrderDate(LocalDateTime.now());
 
-        // 2. Convert each Product in the basket into a permanent OrderItem
+        // 2. snapshot each basket line into an OrderItem (so history doesn't change later)
         for (Map.Entry<Product, Integer> entry : basketContent.entrySet()) {
             Product product = entry.getKey();
             Integer quantity = entry.getValue();
 
             OrderItem item = new OrderItem();
             item.setProductName(product.getName());
-            item.setPriceAtPurchase(product.getPrice()); // Snapshot the price
+            item.setPriceAtPurchase(product.getPrice()); // freeze the price at checkout time
             item.setQuantity(quantity);
 
-            // 3. Link the item to the order (establishing the One-to-Many relationship)
+            // 3. add the item under the order; cascade takes care of saving it
             order.getItems().add(item);
         }
 
-        // 4. Save to H2. CascadeType.ALL in the Order entity will automatically save the items.
+        // 4. save once; @Transactional keeps it all as one unit
         orderRepository.save(order);
     }
 
-    /**
-     * Used by the User profile to see their specific past purchases.
-     */
+    /* user order history */
     public List<Order> findOrdersByUsername(String username) {
-        // We'll use the custom method we added to the OrderRepository
         return orderRepository.findByUsername(username);
     }
 
-    /**
-     * Used by the Admin screen to see the entire history of the marketplace.
-     */
+    /* admin view of everything */
     public List<Order> findAllOrders() {
         return orderRepository.findAll();
     }
 
-    /**
-     * Returns only orders with the given status (e.g. "Processing" or "Delivered").
-     */
+    /* grabs only orders that match a status string */
     public List<Order> findOrdersByStatus(String status) {
         return orderRepository.findByStatus(status);
     }
 
-    /**
-     * Updates the status of a single order and persists the change to the DB.
-     */
+    /* flips the order status and persists it */
     @Transactional
     public void updateOrderStatus(Long orderId, String newStatus) {
         Order order = orderRepository.findById(orderId)

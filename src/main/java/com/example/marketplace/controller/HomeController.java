@@ -46,21 +46,21 @@ public class HomeController {
             HttpSession session,
             Model model) {
 
-        // Role guard: redirect admins to their own home page
+        // kick admins over to their own home
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null) return "redirect:/login";
         if ("admin".equalsIgnoreCase(sessionUser.getRole())) return "redirect:/sudoHome";
 
-        // Find the overall min and max prices in the catalogue for the slider bounds
+        // grab overall price bounds for the slider
         List<Product> all = productRepository.findAll();
         double overallMin = all.stream().mapToDouble(Product::getPrice).min().orElse(0);
         double overallMax = all.stream().mapToDouble(Product::getPrice).max().orElse(1000);
 
-        // Default to full range if not supplied
+        // fall back to full range if nothing supplied
         if (minPrice == null) minPrice = overallMin;
         if (maxPrice == null) maxPrice = overallMax;
 
-        // Fetch filtered + sorted products
+        // filtered + sorted products
         List<Product> products;
         if ("desc".equals(sort)) {
             products = productRepository.findByPriceBetweenDesc(minPrice, maxPrice);
@@ -80,17 +80,19 @@ public class HomeController {
 
     @GetMapping("/ordersUser")
     public String viewUserOrders(HttpSession session, Model model) {
-        // 1. Get the logged-in user from the session
+        // pull logged-in user from session
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
-            return "redirect:/login"; // Safety first!
+            return "redirect:/login";
         }
+        // admins go to their own order view
+        if ("admin".equalsIgnoreCase(user.getRole())) return "redirect:/orders";
 
-        // 2. Fetch only THIS user's orders
+        // only this user's orders
         List<Order> userOrders = orderService.findOrdersByUsername(user.getUsername());
 
-        // 3. Push to the HTML
+        // push to the template
         model.addAttribute("orders", userOrders);
 
         return "ordersUser";
@@ -98,15 +100,15 @@ public class HomeController {
 
     @GetMapping("/item/{id}")
     public String item(@PathVariable Long id, HttpSession session, Model model) {
+        // gotta be logged in
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+
         Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
         model.addAttribute("product", product);
 
-        // Check if the current user has this product favourited
-        User user = (User) session.getAttribute("user");
-        boolean isFavourited = false;
-        if (user != null) {
-            isFavourited = favouriteRepository.findByUsernameAndProduct_Id(user.getUsername(), id) != null;
-        }
+        // check if this user already favourited the product
+        boolean isFavourited = favouriteRepository.findByUsernameAndProduct_Id(user.getUsername(), id) != null;
         model.addAttribute("isFavourited", isFavourited);
 
         return "item";
@@ -115,56 +117,55 @@ public class HomeController {
     @GetMapping("/profile")
     public String profile(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return "redirect:/login";
-        }
+        if (user == null) return "redirect:/login";
+        // admins have their own profile
+        if ("admin".equalsIgnoreCase(user.getRole())) return "redirect:/sudoProfile";
+
         String username = user.getUsername();
 
         double totalSpend = orderRepository.findByUsername(username).stream()
                 .map(o -> o.getTotalAmount() == null ? 0.0 : o.getTotalAmount())
                 .reduce(0.0, Double::sum);
 
-        // Simple status derived from spend (adjust if you have a real field)
+        // derive a simple status from spend
         String status = totalSpend > 0 ? "Active" : "New";
 
         model.addAttribute("username", username);
         model.addAttribute("status", status);
         model.addAttribute("totalSpend", totalSpend);
 
-        // Load this user's favourites for the horizontal scroller
+        // favourites for the horizontal scroller
         List<Favourite> favourites = favouriteRepository.findByUsername(username);
         model.addAttribute("favourites", favourites);
 
         return "profile";
     }
 
-    // Show the change password page
+    // serves the change password page
     @GetMapping("/changePassword")
     public String showChangePassword(HttpSession session) {
         User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return "redirect:/login";
-        }
+        if (user == null) return "redirect:/login";
+        if ("admin".equalsIgnoreCase(user.getRole())) return "redirect:/sudoChangePassword";
         return "changePassword";
     }
 
-    // Handle password change from the change password page
+    // handles the password change form
     @PostMapping("/changePassword")
     public String changePassword(@RequestParam String currentPassword,
                                  @RequestParam String newPassword,
                                  @RequestParam String confirmPassword,
                                  HttpSession session) {
         User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return "redirect:/login";
-        }
+        if (user == null) return "redirect:/login";
+        if ("admin".equalsIgnoreCase(user.getRole())) return "redirect:/sudoChangePassword";
 
-        // Check that new password and confirmation match
+        // new password and confirm gotta match
         if (!newPassword.equals(confirmPassword)) {
             return "redirect:/changePassword?pwError=mismatch";
         }
 
-        // Attempt password change via AuthService
+        // fire the change through AuthService
         boolean changed = authService.changePassword(user.getUsername(), currentPassword, newPassword);
         if (changed) {
             return "redirect:/changePassword?pwSuccess=true";

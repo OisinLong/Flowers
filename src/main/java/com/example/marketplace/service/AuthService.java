@@ -13,25 +13,25 @@ public class AuthService {
 
     public User authenticate(String username, String password) {
         User user = userRepository.findByUsername(username);
-        // Basic credential check
+        // dead simple check for now (no hashing yet)
         if (user != null && user.getPassword().equals(password)) {
             return user;
         }
         return null;
     }
 
-    // Check if a username is already taken
+    // quick guard for registration
     public boolean userExists(String username) {
         return userRepository.findByUsername(username) != null;
     }
 
-    // Save a new user to the database
+    // saves a new user row
     public void registerUser(String username, String password, String role) {
         User user = new User(username, password, role);
         userRepository.save(user);
     }
 
-    // Verify the current password and update to the new one
+    // checks current password before letting u swap it
     public boolean changePassword(String username, String currentPassword, String newPassword) {
         User user = userRepository.findByUsername(username);
         if (user != null && user.getPassword().equals(currentPassword)) {

@@ -14,23 +14,23 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    // Ensuing that the login page is the default landing page
+    // login page is the default landing page
     @GetMapping({"/","/login"})
     public String login() {
         return "login";
     }
 
-    // Handle login POST: redirects based on user role and sets session attributes
+    // handle login: redirect based on role, stash user in session
     @PostMapping("/login")
     public String doLogin(@RequestParam String username, @RequestParam String password, HttpServletRequest request) {
-        // Checking the user against the database and authenticating them
+        // check creds against the db
         User user = authService.authenticate(username, password);
         if (user != null) {
             HttpSession session = request.getSession();
-            // Storing the user object in the session
+            // stash the user object in the session
             session.setAttribute("user", user);
 
-            // Checking if the user is an admin or normal user
+            // send admins and users to their own home
             if ("admin".equalsIgnoreCase(user.getRole())) {
                 return "redirect:/sudoHome";
             } else {
@@ -49,16 +49,16 @@ public class AuthController {
     public String doRegister(@RequestParam String username,
                              @RequestParam String password,
                              @RequestParam String role) {
-        // Check if username already exists
+        // check if username is already taken
         if (authService.userExists(username)) {
             return "redirect:/register?error=exists";
         }
-        // Save the new user to the database
+        // save the new user to h2
         authService.registerUser(username, password, role);
         return "redirect:/login?registered=true";
     }
 
-    // Logout: invalidate the session and redirect to login
+    // nuke the session and send back to login
     @PostMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();

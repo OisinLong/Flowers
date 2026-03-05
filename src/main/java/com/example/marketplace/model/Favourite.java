@@ -1,4 +1,4 @@
-// Favourite entity — links a username to a Product (no quantity, live price)
+// username -> product (no qty), price stays live since we reference Product
 package com.example.marketplace.model;
 
 import jakarta.persistence.*;
@@ -11,10 +11,10 @@ public class Favourite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // The user who favourited this product
+    // who favourited it
     private String username;
 
-    // Reference to the live Product row — price always up to date
+    // points to the live Product row
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
@@ -26,7 +26,7 @@ public class Favourite {
         this.product = product;
     }
 
-    // Getters and Setters
+    // getters/setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -36,4 +36,3 @@ public class Favourite {
     public Product getProduct() { return product; }
     public void setProduct(Product product) { this.product = product; }
 }
-

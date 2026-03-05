@@ -16,7 +16,7 @@ import java.util.Map;
 public class BasketService implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    // The raw data: Product ID -> Quantity
+    // stored as productId -> qty, keeps the session light
     private final Map<Long, Integer> items = new LinkedHashMap<>();
 
     @Autowired
@@ -32,12 +32,12 @@ public class BasketService implements Serializable {
 
     public void clear() {items.clear(); }
 
-    // Adds one more to the quantity
+    // +1 qty
     public void incrementItem(Long id) {
         items.put(id, items.getOrDefault(id, 0) + 1);
     }
 
-    // Subtracts one, or removes the item entirely if quantity hits zero
+    // -1 qty (and if it hits 0 we just chuck it out)
     public void decrementItem(Long id) {
         if (items.containsKey(id)) {
             int currentQty = items.get(id);
@@ -49,7 +49,7 @@ public class BasketService implements Serializable {
         }
     }
 
-    // Business Logic: Transforms IDs into Objects for the View
+    // expands ids into Product objects for thymeleaf
     public Map<Product, Integer> getBasketContent() {
         Map<Product, Integer> content = new LinkedHashMap<>();
         items.forEach((id, qty) ->

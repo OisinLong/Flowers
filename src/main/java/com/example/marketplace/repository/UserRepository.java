@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    // This allows the service to fetch a user by their username
+    // used by auth to fetch a user by username
     User findByUsername(String username);
 }

@@ -3,6 +3,8 @@ package com.example.marketplace.model;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Product implements Serializable {
@@ -12,6 +14,10 @@ public class Product implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // if a product goes, its favourites go with it (avoids fk explosions)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Favourite> favourites = new ArrayList<>();
+
     private String name;
 
     @Lob
@@ -20,7 +26,7 @@ public class Product implements Serializable {
 
     private double price;
 
-    // New: path to an image under `src/main/resources/static`
+    // image path under src/main/resources/static
     private String imageUrl;
 
     public Product() {}

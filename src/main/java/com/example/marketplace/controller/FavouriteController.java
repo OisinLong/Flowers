@@ -20,7 +20,7 @@ public class FavouriteController {
     @Autowired
     private ProductRepository productRepository;
 
-    // Toggle favourite on/off — used by the heart button on the item page
+    // toggles a favourite on/off from the item page
     @PostMapping("/favourites/toggle/{id}")
     public String toggleFavourite(@PathVariable Long id, HttpSession session) {
         User user = (User) session.getAttribute("user");
@@ -32,19 +32,19 @@ public class FavouriteController {
         Favourite existing = favouriteRepository.findByUsernameAndProduct_Id(username, id);
 
         if (existing == null) {
-            // Not yet favourited — add it
+            // wasn't favourited yet, so add it
             Product product = productRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Product not found"));
             favouriteRepository.save(new Favourite(username, product));
         } else {
-            // Already favourited — remove it
+            // already favourited, so chuck it out
             favouriteRepository.deleteByUsernameAndProduct_Id(username, id);
         }
 
         return "redirect:/item/" + id;
     }
 
-    // Remove favourite — used by the ✕ button on the profile scroller
+    // removes a favourite from the profile scroller
     @PostMapping("/favourites/remove/{id}")
     public String removeFavourite(@PathVariable Long id, HttpSession session) {
         User user = (User) session.getAttribute("user");
@@ -56,4 +56,3 @@ public class FavouriteController {
         return "redirect:/profile";
     }
 }
-

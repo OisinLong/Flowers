@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<!-- Same header as sudoHome -->
+<!-- same header as sudoHome -->
 <header>
     <nav>
         <h1><a th:href="@{/sudoHome}">Marketplace</a></h1>
@@ -21,7 +21,7 @@
 </header>
 
 <main>
-    <!-- Image preview (styled like the item card on item.html) -->
+    <!-- image preview card -->
     <div class="items">
         <div class="item" id="preview-card">
             <img id="preview-img" src="" alt="Select an image" style="display:none;" />
@@ -29,30 +29,30 @@
         </div>
     </div>
 
-    <!-- Form styled like the description / addToBasket sections on item.html -->
+    <!-- add product form -->
     <div class="centered">
         <div class="description">
             <form th:action="@{/addItem}" method="post" style="display:flex; flex-direction:column; gap:12px; text-align:left;">
 
-                <!-- Name -->
+                <!-- name -->
                 <label for="name" style="font-weight:bold; color:#4A7C59;">Name</label>
                 <input type="text" id="name" name="name" required
                        placeholder="e.g. Sunflower"
                        style="padding:8px; border:1px solid #A3C4A8; border-radius:4px; font-family:inherit;" />
 
-                <!-- Price -->
+                <!-- price -->
                 <label for="price" style="font-weight:bold; color:#4A7C59;">Price (€)</label>
                 <input type="number" id="price" name="price" step="0.01" min="0" required
                        placeholder="e.g. 4.99"
                        style="padding:8px; border:1px solid #A3C4A8; border-radius:4px; font-family:inherit;" />
 
-                <!-- Description -->
+                <!-- description -->
                 <label for="description" style="font-weight:bold; color:#4A7C59;">Description</label>
                 <textarea id="description" name="description" rows="4" required
                           placeholder="Describe the product…"
                           style="padding:8px; border:1px solid #A3C4A8; border-radius:4px; font-family:inherit; resize:vertical;"></textarea>
 
-                <!-- Image dropdown (populated from available images on the classpath) -->
+                <!-- image dropdown -->
                 <label for="imageFilename" style="font-weight:bold; color:#4A7C59;">Image</label>
                 <select id="imageFilename" name="imageFilename" required
                         onchange="updatePreview(this.value)"
@@ -61,7 +61,7 @@
                     <option th:each="img : ${images}" th:value="${img}" th:text="${img}"></option>
                 </select>
 
-                <!-- Submit -->
+                <!-- submit -->
                 <button type="submit" class="addToBasket"
                         style="margin-top:8px;">Add Product</button>
             </form>
@@ -69,7 +69,7 @@
     </div>
 </main>
 
-<!-- Live image preview when a different image is selected -->
+<!-- live preview when u pick a new image -->
 <script>
     function updatePreview(filename) {
         var img = document.getElementById('preview-img');

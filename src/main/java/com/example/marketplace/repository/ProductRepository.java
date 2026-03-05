@@ -11,11 +11,11 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product,Long> {
 
-    // Filter products between a min and max price, sorted ascending
+    // price filter + sort asc (for the slider)
     @Query("SELECT p FROM Product p WHERE p.price >= :min AND p.price <= :max ORDER BY p.price ASC")
     List<Product> findByPriceBetweenAsc(@Param("min") double min, @Param("max") double max);
 
-    // Filter products between a min and max price, sorted descending
+    // same thing but desc
     @Query("SELECT p FROM Product p WHERE p.price >= :min AND p.price <= :max ORDER BY p.price DESC")
     List<Product> findByPriceBetweenDesc(@Param("min") double min, @Param("max") double max);
 }

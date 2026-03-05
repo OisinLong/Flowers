@@ -1,4 +1,3 @@
-// java
 package com.example.marketplace;
 
 import org.springframework.boot.SpringApplication;

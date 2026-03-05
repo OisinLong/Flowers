@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-// Scans /static/images/ on the classpath at startup and stores the filenames
-// Works both when running from IDE and from a packaged JAR
+// scans /static/images once at startup so add/edit item can show a dropdown
+// works in ide + jar, hence i don't have to hardcode filenames
 @Service
 public class ImageService {
 
@@ -32,9 +32,8 @@ public class ImageService {
         System.out.println("ImageService: Found " + imageFilenames.size() + " images in /static/images/");
     }
 
-    // Returns all image filenames (e.g. "Rose.png", "Tulip.png")
+    // hands back filenames like "Rose.png"
     public List<String> getAvailableImages() {
         return imageFilenames;
     }
 }
-
